@@ -3,6 +3,7 @@ var _os				= require('os');
 var _ 				= require('underscore');
 var _qs 			= require('querystring');
 var _http 			= require('./lib.httpserver').httpserver;
+var _server 		= require('./lib.simpleserver').simpleserver;
 var _logger 		= require('./lib.logger').logger;
 var _datastore 		= require('./lib.datastore').datastore;
 var _redis 			= require("redis");
@@ -13,6 +14,7 @@ var debug_mode		= true;
 
 function operator() {
 	this.port	= 8020;
+	this.wsport	= 8022;
 	this.logger = new _logger({label:'Operator:'+process.pid});
 	var scope = this;
 }
@@ -39,7 +41,7 @@ operator.prototype.init = function() {
 }
 operator.prototype.serverInit = function() {
 	var scope = this;
-	this.logger.error("Server Starting");
+	this.logger.error("HTTP Server Starting");
 	this.server	= new _http({
 		port:		this.port,
 		mysql:		this.mysql,
@@ -72,6 +74,54 @@ operator.prototype.serverInit = function() {
 					// fail is already handled by the httpserver
 				});
 			}
+		}
+	});
+	this.logger.error("Socket Server Starting");
+	this.wsserver = new _server(this.wsport, {
+		logger:		this.logger,
+		onConnect:	function(client) {
+			//scope.logger.log("client",client);
+		},
+		onReceive:	function(client, data) {
+			if (data.authToken) {
+				scope.mysql.query("select u.id,u.email,u.firstname,u.lastname,t.token,t.validity from authtokens as t, users as u where u.id=t.uid and t.token='"+data.authToken+"' and t.validity > "+(new Date().getTime()/1000), function(err, rows, fields) {
+					if (rows.length > 0 && rows[0].id > 0) {
+						scope.logger.info(
+							"Auth Token validated: ",
+							"UID: \t\t"+rows[0].id,
+							"Token: \t"+rows[0].token,
+							"Validity: \t"+new Date(rows[0].validity*1000).toISOString(),
+							"User: \t\t"+rows[0].firstname+" "+rows[0].lastname
+						);
+						scope.getRaceToken(rows[0].id, data.rid, function(raceToken) {
+							scope.logger.log("raceToken: ",raceToken);
+							
+							var response = {
+								raceToken:	raceToken,
+								cylon:		{
+									host:	'127.0.0.1',
+									port:	8080
+								}
+							};
+							if (data.ask_id) {
+								response.response_id = data.ask_id;
+							}
+							scope.wsserver.send(client.uid, response);
+						});
+					} else {
+						
+						var response = {invalidtoken: true};
+						if (data.ask_id) {
+							response.response_id = data.ask_id;
+						}
+						scope.wsserver.send(client.uid, response);
+					}
+				});
+			}
+			
+		},
+		onQuit:	function(client) {
+			
 		}
 	});
 }

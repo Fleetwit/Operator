@@ -3,6 +3,7 @@
 	"description": 	"Monitor the number of players per Cylon, auth the user and send them to the best Cylon instance.",
 	"version":		"1.0.0",
 	"dependencies": {
+		"ws": 			"latest",
 		"mysql":		"latest",
 		"mongodb":		"latest",
 		"redis":		"latest",
