@@ -97,8 +97,8 @@ operator.prototype.serverInit = function() {
 							var response = {
 								raceToken:	raceToken,
 								cylon:		{
-									host:	'127.0.0.1',
-									port:	8080
+									host:	'209.59.172.80',
+									port:	8024
 								}
 							};
 							if (data.ask_id) {
