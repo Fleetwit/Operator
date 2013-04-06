@@ -126,7 +126,7 @@ operator.prototype.serverInit = function() {
 operator.prototype.getRaceToken = function(uid, rid, callback) {
 	var scope = this;
 	// Check if the user already has a raceToken
-	this.mysql.query("select * from races_scores where uid="+uid+" and rid="+rid+" and racetoken=''", function(err, rows, fields) {
+	this.mysql.query("select * from races_scores where uid="+uid+" and rid="+rid+" and racetoken <> ''", function(err, rows, fields) {
 		if (rows.length > 0 && rows[0].id > 0) {
 			// We have a raceToken, we return it
 			callback(rows[0].racetoken);
