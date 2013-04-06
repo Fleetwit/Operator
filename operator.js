@@ -8,7 +8,7 @@ var _logger 		= require('./lib.logger').logger;
 var _datastore 		= require('./lib.datastore').datastore;
 var _redis 			= require("redis");
 var _mysql			= require('mysql');
-var uuid 				= require('./lib.uuid');
+var uuid 			= require('./lib.uuid');
 
 var debug_mode		= true;
 
@@ -21,21 +21,19 @@ function operator() {
 
 operator.prototype.init = function() {
 	var scope = this;
-	scope.redis = _redis.createClient();
-	scope.redis.select(0, function() {
-		scope.mongo = new _datastore({
-			database:		"fleetwit"
+	
+	scope.mongo = new _datastore({
+		database:		"fleetwit"
+	});
+	scope.mongo.init(function() {
+		scope.mysql = _mysql.createConnection({
+			host     : 'localhost',
+			user     : 'root',
+			password : '',
+			database : 'fleetwit'
 		});
-		scope.mongo.init(function() {
-			scope.mysql = _mysql.createConnection({
-				host     : 'localhost',
-				user     : 'root',
-				password : '',
-				database : 'fleetwit'
-			});
-			scope.mysql.connect(function(err) {
-				scope.serverInit();
-			});
+		scope.mysql.connect(function(err) {
+			scope.serverInit();
 		});
 	});
 }
@@ -64,8 +62,8 @@ operator.prototype.serverInit = function() {
 							instance.output(server, {
 								raceToken:	raceToken,
 								cylon:		{
-									host:	'127.0.0.1',
-									port:	8080
+									host:	'209.59.172.80',
+									port:	8024
 								}
 							}, true);
 						});
