@@ -28,7 +28,7 @@ function logger(options) {
 	},options);
 }
 logger.prototype.log = function(){
-	var args = [this.color[this.options.color]+this.options.label+"\n"];
+	var args = ["\n"+this.color[this.options.color]+this.options.label+this.color['reset']+"\n"];
 	for (i in arguments) {
 		args.push(this.color['white']+arguments[i]+this.color['reset']+"\n");
 	}

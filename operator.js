@@ -9,8 +9,9 @@ var _datastore 		= require('./lib.datastore').datastore;
 var _redis 			= require("redis");
 var _mysql			= require('mysql');
 var uuid 			= require('./lib.uuid');
+var reporter 		= require('./lib.reporter').reporter;
 
-var debug_mode		= true;
+var debug_mode		= false;
 
 function operator() {
 	this.port	= 8020;
@@ -120,6 +121,17 @@ operator.prototype.serverInit = function() {
 		},
 		onQuit:	function(client) {
 			
+		}
+	});
+	
+	this.reporter = new reporter({
+		label:		"operator",
+		onRequest:	function() {
+			return {
+				cpu: 	_os.cpus()[0].times,
+				mem:	process.memoryUsage(),
+				online:	scope.wsserver.count
+			};
 		}
 	});
 }

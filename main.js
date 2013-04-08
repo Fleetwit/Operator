@@ -4,7 +4,7 @@ var _ 				= require('underscore');
 
 var main			= './operator.js';
 var options = {
-	timeout:	5000		// if the process doesn't respond after this time, it is killed
+	timeout:	10000		// if the process doesn't respond after this time, it is killed
 }
 var i;
 var workers				= {};
