@@ -130,8 +130,8 @@ operator.prototype.serverInit = function() {
 			return {
 				cpu: 	_os.cpus()[0].times,
 				mem:	process.memoryUsage(),
-				totalmem:	os.totalmem(),
-				freemem:	os.freemem(),
+				totalmem:	_os.totalmem(),
+				freemem:	_os.freemem(),
 				count:	scope.wsserver.count,
 				ocount:	scope.wsserver.ocount
 			};
