@@ -98,7 +98,7 @@ operator.prototype.serverInit = function() {
 							var response = {
 								raceToken:	raceToken,
 								cylon:		{
-									host:	'209.59.172.80',
+									host:	'127.0.0.1', //209.59.172.80
 									port:	8024
 								}
 							};
@@ -130,6 +130,8 @@ operator.prototype.serverInit = function() {
 			return {
 				cpu: 	_os.cpus()[0].times,
 				mem:	process.memoryUsage(),
+				totalmem:	os.totalmem(),
+				freemem:	os.freemem(),
 				count:	scope.wsserver.count,
 				ocount:	scope.wsserver.ocount
 			};
