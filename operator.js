@@ -98,7 +98,7 @@ operator.prototype.serverInit = function() {
 							var response = {
 								raceToken:	raceToken,
 								cylon:		{
-									host:	'127.0.0.1', //209.59.172.80
+									host:	'209.59.172.80', //209.59.172.80
 									port:	8024
 								}
 							};
