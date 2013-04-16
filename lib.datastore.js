@@ -42,7 +42,7 @@ datastore.prototype.getUser = function(collectionName, uid, callback) {
 		}, {
 			limit:1
 		}).toArray(function(err, docs) {
-			console.dir(docs);
+			//console.dir(docs);
 			if (docs.length == 0) {
 				// No userdata, we create it.
 				collection.insert({
